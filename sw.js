@@ -36,9 +36,16 @@ self.addEventListener('fetch', e => {
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(response => {
-        if (response.ok && e.request.url.startsWith('http')) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+        if (response && response.ok) {
+          try {
+            const reqUrl = new URL(e.request.url);
+            if (reqUrl.origin === self.location.origin) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+            }
+          } catch (err) {
+            // ignore URL parsing / cross-origin caching errors
+          }
         }
         return response;
       }).catch(() => {

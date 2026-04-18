@@ -363,7 +363,11 @@ const STORAGE_KEY = "budget2026_v2";
 const SETTINGS_KEY = "budget2026_settings_v1";
 
 const fmt = v => new Intl.NumberFormat("de-CH",{style:"currency",currency:"CHF"}).format(v||0);
-const fmtShort = v => { if(Math.abs(v)>=1000) return (v/1000).toFixed(1)+"k"; return v.toFixed(0); };
+const fmtShort = v => {
+  v = Number(v) || 0;
+  if (Math.abs(v) >= 1000) return (v / 1000).toFixed(1) + "k";
+  return v.toFixed(0);
+};
 
 // ─── Data ───
 function initMonth(){
@@ -449,8 +453,13 @@ function exportCSV(){
   const csv = rows.map(r=>r.join(';')).join('\n');
   const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='budget_2026.csv'; a.click();
-  URL.revokeObjectURL(url);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'budget_2026.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function copyFixFromPrev(){
@@ -961,7 +970,7 @@ initGestures();
 
 // ─── Service Worker ───
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js').catch(err=>{ console.warn('ServiceWorker registration failed:', err); });
 }
 </script>
 </body>
