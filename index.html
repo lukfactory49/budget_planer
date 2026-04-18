@@ -173,6 +173,7 @@ body {
   background:var(--bg); border:1px solid var(--border);
   color:var(--text); border-radius:10px; padding:10px 12px;
   font-family:inherit; font-size:13px; outline:none; width:100%;
+  box-sizing:border-box; min-width:0;
 }
 .var-input:focus { border-color:var(--accent); }
 .var-input-amount {
@@ -334,12 +335,14 @@ function calcMonth(m){
 
 // ─── Render Engine ───
 function render(){
+  const scrollY = window.scrollY;
   const app = document.getElementById("app");
   if(STATE.tab==="month") app.innerHTML = renderMonthView();
   else app.innerHTML = renderYearView();
   app.innerHTML += renderTabBar();
   if(STATE.showReset) app.innerHTML += renderResetModal();
   bindEvents();
+  window.scrollTo(0, scrollY);
 }
 
 function renderTabBar(){
