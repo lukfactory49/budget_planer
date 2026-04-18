@@ -550,17 +550,20 @@ function bindEvents(){
   // Gehalt
   const gehaltInput = document.querySelector("[data-field='gehalt']");
   if(gehaltInput){
-    gehaltInput.oninput = ()=>{ DATA[STATE.month].gehalt=parseFloat(gehaltInput.value)||0; saveData(DATA); render(); };
+    gehaltInput.oninput = ()=>{ DATA[STATE.month].gehalt=parseFloat(gehaltInput.value)||0; saveData(DATA); };
+    gehaltInput.onblur = ()=>render();
   }
 
   // Fix costs
   document.querySelectorAll("[data-fix]").forEach(inp=>{
-    inp.oninput = ()=>{ DATA[STATE.month].fix[inp.dataset.fix].amount=parseFloat(inp.value)||0; saveData(DATA); render(); };
+    inp.oninput = ()=>{ DATA[STATE.month].fix[inp.dataset.fix].amount=parseFloat(inp.value)||0; saveData(DATA); };
+    inp.onblur = ()=>render();
   });
 
   // Savings
   document.querySelectorAll("[data-save]").forEach(inp=>{
-    inp.oninput = ()=>{ DATA[STATE.month].savings[inp.dataset.save].amount=parseFloat(inp.value)||0; saveData(DATA); render(); };
+    inp.oninput = ()=>{ DATA[STATE.month].savings[inp.dataset.save].amount=parseFloat(inp.value)||0; saveData(DATA); };
+    inp.onblur = ()=>render();
   });
 
   // Variable cost inputs
@@ -568,13 +571,13 @@ function bindEvents(){
     if(inp.dataset.vardel!==undefined) return;
     const idx = parseInt(inp.dataset.var);
     const field = inp.dataset.vfield;
-    inp.oninput = inp.onchange = ()=>{
+    inp.oninput = ()=>{
       if(field==="amount") DATA[STATE.month].variable[idx][field]=parseFloat(inp.value)||0;
       else DATA[STATE.month].variable[idx][field]=inp.value;
       saveData(DATA);
-      // Don't re-render on every keystroke for text fields
-      if(field==="amount"||field==="category"||field==="date") render();
     };
+    inp.onchange = ()=>{ saveData(DATA); render(); };
+    inp.onblur = ()=>render();
   });
 
   // Delete variable
