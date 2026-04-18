@@ -271,6 +271,13 @@ body {
 }
 .cat-limit-input:focus { border-color:var(--accent); color:var(--text); }
 .cat-limit-label { font-size:9px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+.cat-del-btn {
+  background:none; border:none; color:var(--text-muted);
+  width:22px; height:22px; font-size:16px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:color .15s;
+}
+.cat-del-btn:not([disabled]):hover { color:var(--red); }
 
 /* ── Progress Bar ── */
 .progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; flex:1; }
@@ -347,8 +354,9 @@ input[type=number] { -moz-appearance:textfield; }
 // ─── Constants ───
 const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const MONTHS_SHORT = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
-const CATEGORIES = ["Essen","Hobby","Freizeit","Ferien","Haushalt"];
-const CAT_COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
+const CATEGORIES_DEFAULT = ["Essen","Hobby","Freizeit","Ferien","Haushalt"];
+const COLOR_PALETTE = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444','#06b6d4','#f97316','#ec4899','#84cc16','#6366f1'];
+const getCatColor = i => COLOR_PALETTE[i % COLOR_PALETTE.length];
 const FIX_LABELS_DEFAULT = ["Miete/Essen","Krankenkasse","Handy/Spotify","Motorrad Vers.","Weiterbildung","Steuern"];
 const SAVE_LABELS = ["Sparkonto","Invest.","Säule 3a"];
 const STORAGE_KEY = "budget2026_v2";
@@ -375,12 +383,15 @@ function saveData(data){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(dat
 
 function loadSettings(){
   try { const s=localStorage.getItem(SETTINGS_KEY); if(s) return JSON.parse(s); } catch(e){}
-  return { catLimits:{}, sparZiel:0 };
+  return { catLimits:{}, sparZiel:0, categories:[...CATEGORIES_DEFAULT] };
 }
 function saveSettings(){ try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS))}catch(e){} }
 
 let DATA = loadData();
 let SETTINGS = loadSettings();
+if(!SETTINGS.categories){ SETTINGS.categories=[...CATEGORIES_DEFAULT]; saveSettings(); }
+const cats = () => SETTINGS.categories;
+const isCatInUse = cat => MONTHS.some(m=>DATA[m].variable.some(v=>v.category===cat));
 let STATE = { tab:"month", month:MONTHS[new Date().getMonth()], showReset:false, qa:{desc:'',amount:''} };
 
 // ─── Helpers ───
@@ -486,27 +497,29 @@ function renderMonthView(){
 
   // Category totals
   const catTotals = {};
-  CATEGORIES.forEach(cat=>{ catTotals[cat]=d.variable.filter(v=>v.category===cat).reduce((s,v)=>s+v.amount,0); });
-  const hasCatData = CATEGORIES.some(cat=>catTotals[cat]>0||SETTINGS.catLimits[cat]>0);
+  cats().forEach(cat=>{ catTotals[cat]=d.variable.filter(v=>v.category===cat).reduce((s,v)=>s+v.amount,0); });
 
   const catLimitSection = `<div class="cat-limit-section">
-    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-      <span class="cat-limit-label">Kategorie</span>
-      <span class="cat-limit-label">Limit / Monat</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span class="cat-limit-label">Kategorien &amp; Limits</span>
     </div>
-    ${CATEGORIES.map((cat,i)=>{
-      const total=catTotals[cat]; const limit=SETTINGS.catLimits[cat]||0;
-      if(!total&&!limit) return '';
+    ${cats().map((cat,i)=>{
+      const total=catTotals[cat]||0; const limit=SETTINGS.catLimits[cat]||0;
       const pct=limit?Math.min(total/limit*100,100):0; const over=limit&&total>limit;
+      const inUse=isCatInUse(cat);
       return `<div class="cat-limit-row">
-        <span class="cat-limit-dot" style="background:${CAT_COLORS[i]}"></span>
+        <span class="cat-limit-dot" style="background:${getCatColor(i)}"></span>
         <span class="cat-limit-name">${cat}</span>
-        ${limit?`<div class="progress-bar"><div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${over?'var(--red)':CAT_COLORS[i]}"></div></div>`:'<div style="flex:1"></div>'}
-        <span class="cat-limit-amount" style="color:${over?'var(--red)':'var(--text)'}">${fmt(total)}</span>
-        <input type="number" inputmode="decimal" step="50" class="cat-limit-input" placeholder="—" value="${limit||''}" data-catlimit="${cat}">
+        ${limit?`<div class="progress-bar"><div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${over?'var(--red)':getCatColor(i)}"></div></div>`:'<div style="flex:1"></div>'}
+        <span class="cat-limit-amount" style="color:${over?'var(--red)':'var(--text-muted)'}">${total>0?fmt(total):''}</span>
+        <input type="number" inputmode="decimal" step="50" class="cat-limit-input" placeholder="Limit" value="${limit||''}" data-catlimit="${cat}">
+        <button class="cat-del-btn" data-delcat="${cat}" style="opacity:${inUse?'.25':'1'};cursor:${inUse?'default':'pointer'}" ${inUse?'disabled':''} title="${inUse?'Wird verwendet':'Löschen'}">×</button>
       </div>`;
-    }).filter(Boolean).join('')}
-    ${!hasCatData?`<div style="font-size:12px;color:var(--text-muted)">Trage Limits ein sobald du Einträge hast.</div>`:''}
+    }).join('')}
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="text" class="qa-input" style="flex:1;font-size:13px" placeholder="Neue Kategorie…" id="newCatInput">
+      <button class="qa-btn" data-action="addcat" style="font-size:18px">+</button>
+    </div>
   </div>`;
 
   return `
@@ -592,7 +605,7 @@ function renderMonthView(){
         <input type="date" class="var-input" value="${v.date||''}" data-var="${i}" data-vfield="date">
         <select class="var-input" data-var="${i}" data-vfield="category">
           <option value="">Kategorie</option>
-          ${CATEGORIES.map(cat=>`<option value="${cat}" ${v.category===cat?'selected':''}>${cat}</option>`).join("")}
+          ${cats().map(cat=>`<option value="${cat}" ${v.category===cat?'selected':''}>${cat}</option>`).join("")}
         </select>
         <button class="recurring-btn ${v.recurring?'active':''}" data-varrecur="${i}" title="Wiederkehrend">↺</button>
       </div>
@@ -611,19 +624,19 @@ function renderMonthView(){
 
 // ─── Donut Chart ───
 function renderDonutChart(catTotals){
-  const total = CATEGORIES.reduce((s,c)=>s+(catTotals[c]||0),0);
+  const total = cats().reduce((s,c)=>s+(catTotals[c]||0),0);
   if(!total) return '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Daten</div>';
   const r=40,cx=60,cy=60,circ=2*Math.PI*r;
   let cumAngle=-90;
-  const segments = CATEGORIES.map((cat,i)=>{
+  const segments = cats().map((cat,i)=>{
     const pct=(catTotals[cat]||0)/total; const dash=pct*circ;
     if(!dash) return '';
-    const seg=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${CAT_COLORS[i]}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" transform="rotate(${cumAngle} ${cx} ${cy})"/>`;
+    const seg=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${getCatColor(i)}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" transform="rotate(${cumAngle} ${cx} ${cy})"/>`;
     cumAngle+=pct*360; return seg;
   }).join('');
-  const legend = CATEGORIES.map((cat,i)=>`
+  const legend = cats().map((cat,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
-      <span style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[i]};flex-shrink:0"></span>
+      <span style="width:10px;height:10px;border-radius:50%;background:${getCatColor(i)};flex-shrink:0"></span>
       <span style="flex:1;font-size:13px;color:var(--text-muted)">${cat}</span>
       <span style="font-family:'JetBrains Mono',monospace;font-size:13px">${fmt(catTotals[cat]||0)}</span>
     </div>`).join('');
@@ -646,7 +659,7 @@ function renderYearView(){
   const maxAusgaben = Math.max(...stats.map(s=>s.ausgaben));
 
   const catTotals = {};
-  CATEGORIES.forEach(c=>{ catTotals[c]=MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
+  cats().forEach(c=>{ catTotals[c]=MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
 
   const sz=SETTINGS.sparZiel||0;
   const szPct=sz>0?Math.min(totals.sparen/sz*100,100):0;
@@ -878,6 +891,31 @@ function bindEvents(){
   document.querySelectorAll("[data-action='exportcsv']").forEach(btn=>{
     btn.onclick = ()=>exportCSV();
   });
+
+  // Delete category
+  document.querySelectorAll("[data-delcat]").forEach(btn=>{
+    if(btn.disabled) return;
+    btn.onclick = ()=>{
+      SETTINGS.categories = SETTINGS.categories.filter(c=>c!==btn.dataset.delcat);
+      delete SETTINGS.catLimits[btn.dataset.delcat];
+      saveSettings(); haptic(15); render();
+    };
+  });
+
+  // Add category
+  document.querySelectorAll("[data-action='addcat']").forEach(btn=>{
+    btn.onclick = ()=>{
+      const inp = document.getElementById('newCatInput');
+      const name = inp?.value?.trim();
+      if(!name || SETTINGS.categories.includes(name)) return;
+      SETTINGS.categories.push(name);
+      saveSettings(); haptic(); render();
+    };
+  });
+  const newCatInput = document.getElementById('newCatInput');
+  if(newCatInput){
+    newCatInput.onkeydown = e=>{ if(e.key==='Enter') document.querySelector("[data-action='addcat']")?.click(); };
+  }
 
   // Reset
   document.querySelectorAll("[data-action='reset']").forEach(btn=>{
