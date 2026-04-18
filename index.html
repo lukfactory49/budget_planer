@@ -60,10 +60,12 @@ body {
 }
 .header h1 { font-size:22px; font-weight:800; letter-spacing:-.5px; }
 .header h1 span { color:var(--accent); }
+.header-sub { font-size:13px; color:var(--text-muted); font-weight:500; margin-top:2px; }
+.header-actions { display:flex; gap:8px; }
 .header-btn {
   background:var(--card); border:1px solid var(--border); color:var(--text-muted);
   padding:8px 14px; border-radius:10px; font-size:12px; font-weight:600;
-  font-family:inherit; cursor:pointer;
+  font-family:inherit; cursor:pointer; transition:color .2s;
 }
 
 /* ── Tab Bar (Bottom Nav) ── */
@@ -109,13 +111,13 @@ body {
 .card {
   background:var(--card); border:1px solid var(--border);
   border-radius:var(--radius); padding:18px; margin:0 16px 12px;
+  border-left:3px solid var(--cc, var(--border));
 }
 .card-title {
   font-size:13px; font-weight:700; color:var(--text-muted);
   text-transform:uppercase; letter-spacing:.8px; margin-bottom:14px;
   display:flex; align-items:center; gap:8px;
 }
-.card-title .dot { width:8px; height:8px; border-radius:50%; }
 
 /* ── Summary Chips ── */
 .summary-row {
@@ -125,6 +127,7 @@ body {
 .summary-chip {
   background:var(--card); border:1px solid var(--border);
   border-radius:var(--radius); padding:14px 16px;
+  border-top:3px solid var(--chip-accent, var(--border));
 }
 .summary-chip .label {
   font-size:10px; font-weight:700; text-transform:uppercase;
@@ -134,6 +137,12 @@ body {
   font-size:20px; font-weight:700;
   font-family:'JetBrains Mono',monospace;
 }
+.summary-chip .sub { font-size:11px; color:var(--text-muted); margin-top:3px; }
+
+/* ── Delta badge ── */
+.delta { font-size:10px; font-weight:700; margin-top:2px; }
+.delta.pos { color:var(--green); }
+.delta.neg { color:var(--red); }
 
 /* ── Input Rows ── */
 .input-row {
@@ -162,9 +171,10 @@ body {
 
 /* ── Variable Costs ── */
 .var-entry {
-  padding:12px 0; border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.03); border:1px solid var(--border);
+  border-radius:10px; padding:12px; margin-bottom:8px;
 }
-.var-entry:last-child { border-bottom:none; }
+.var-entry:last-child { margin-bottom:0; }
 .var-entry-row {
   display:grid; grid-template-columns:1fr 1fr; gap:8px;
   margin-bottom:6px;
@@ -191,6 +201,32 @@ body {
   font-family:inherit; cursor:pointer; margin-top:10px;
 }
 
+/* ── Category Limit Rows ── */
+.cat-limit-section { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+.cat-limit-row { display:flex; align-items:center; gap:8px; padding:5px 0; }
+.cat-limit-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.cat-limit-name { font-size:12px; font-weight:600; min-width:56px; }
+.cat-limit-amount { font-family:'JetBrains Mono',monospace; font-size:12px; white-space:nowrap; }
+.cat-limit-input {
+  background:var(--bg); border:1px solid var(--border); color:var(--text-muted);
+  border-radius:8px; padding:4px 8px; font-family:'JetBrains Mono',monospace; font-size:11px;
+  outline:none; width:72px; text-align:right; -webkit-appearance:none;
+}
+.cat-limit-input:focus { border-color:var(--accent); color:var(--text); }
+.cat-limit-label { font-size:9px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+
+/* ── Progress Bar ── */
+.progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; flex:1; }
+.progress-fill { height:100%; border-radius:3px; transition:width .5s ease; }
+
+/* ── Small Button ── */
+.small-btn {
+  background:var(--bg); border:1px solid var(--border); color:var(--text-muted);
+  padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;
+  font-family:inherit; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  text-transform:none; letter-spacing:0;
+}
+
 /* ── Jahresübersicht Table ── */
 .year-table {
   width:100%; border-collapse:collapse; font-size:13px;
@@ -208,21 +244,19 @@ body {
 .year-table td:first-child {
   text-align:left; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px;
 }
-.year-table tr.total-row {
-  background:var(--card-hover);
-}
+.year-table tr.total-row { background:var(--card-hover); }
 .year-table tr.total-row td { font-weight:700; font-size:13px; }
 
 /* ── Bar Chart ── */
 .chart-container { padding:0 4px; }
 .chart-bars {
-  display:flex; align-items:flex-end; gap:4px; height:140px;
+  display:flex; align-items:flex-end; gap:4px; height:160px;
 }
 .chart-col {
   flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
 }
 .chart-pair {
-  display:flex; gap:2px; align-items:flex-end; width:100%; height:120px;
+  display:flex; gap:2px; align-items:flex-end; width:100%; height:136px;
 }
 .chart-bar {
   flex:1; border-radius:3px 3px 0 0; min-height:0;
@@ -260,22 +294,6 @@ body {
 .modal-btn-cancel { background:var(--bg); color:var(--text-muted); }
 .modal-btn-danger { background:var(--red-dim); color:var(--red); }
 
-/* ── Category breakdown ── */
-.cat-table { width:100%; border-collapse:collapse; font-size:12px; }
-.cat-table th {
-  text-align:right; padding:8px 6px; font-size:9px;
-  font-weight:700; text-transform:uppercase; letter-spacing:.4px;
-  color:var(--text-muted); border-bottom:2px solid var(--border);
-}
-.cat-table th:first-child { text-align:left; }
-.cat-table td {
-  padding:8px 6px; text-align:right; border-bottom:1px solid var(--border);
-  font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted);
-}
-.cat-table td:first-child {
-  text-align:left; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; color:var(--text);
-}
-
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 
@@ -298,6 +316,7 @@ const CAT_COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
 const FIX_LABELS = ["Miete/Essen","Krankenkasse","Handy/Spotify","Motorrad Vers.","Weiterbildung","Steuern"];
 const SAVE_LABELS = ["Sparkonto","Invest.","Säule 3a"];
 const STORAGE_KEY = "budget2026_v2";
+const SETTINGS_KEY = "budget2026_settings_v1";
 
 const fmt = v => new Intl.NumberFormat("de-CH",{style:"currency",currency:"CHF"}).format(v||0);
 const fmtShort = v => {
@@ -318,13 +337,19 @@ function loadData(){
   try { const d=localStorage.getItem(STORAGE_KEY); if(d) return JSON.parse(d); } catch(e){}
   return Object.fromEntries(MONTHS.map(m=>[m,initMonth()]));
 }
-
 function saveData(data){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){} }
 
+function loadSettings(){
+  try { const s=localStorage.getItem(SETTINGS_KEY); if(s) return JSON.parse(s); } catch(e){}
+  return { catLimits:{}, sparZiel:0 };
+}
+function saveSettings(){ try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS))}catch(e){} }
+
 let DATA = loadData();
+let SETTINGS = loadSettings();
 let STATE = { tab:"month", month:MONTHS[new Date().getMonth()], showReset:false };
 
-// ─── Calc helpers ───
+// ─── Helpers ───
 function calcMonth(m){
   const d = DATA[m];
   const sumFix = d.fix.reduce((s,f)=>s+f.amount,0);
@@ -332,6 +357,36 @@ function calcMonth(m){
   const sumSave = d.savings.reduce((s,sv)=>s+sv.amount,0);
   const ausgaben = sumFix + sumVar + sumSave;
   return { einnahmen:d.gehalt, ausgaben, sparen:sumSave, fazit:d.gehalt-ausgaben, sumFix, sumVar, sumSave };
+}
+
+function prevMonthName(m){ const i=MONTHS.indexOf(m); return i>0?MONTHS[i-1]:null; }
+
+function chipDelta(curr, prev, higherIsBetter){
+  if(prev===null||prev===undefined) return '';
+  const d = curr - prev;
+  if(Math.abs(d) < 0.5) return '';
+  const good = higherIsBetter ? d > 0 : d < 0;
+  return `<div class="delta ${good?'pos':'neg'}">${d>0?'↑':'↓'} ${fmtShort(Math.abs(d))}</div>`;
+}
+
+function exportCSV(){
+  const rows = [['Monat','Einnahmen','Fixkosten','Variabel','Sparen','Ausgaben','Fazit']];
+  MONTHS.forEach(m=>{
+    const c = calcMonth(m);
+    rows.push([m, c.einnahmen.toFixed(2), c.sumFix.toFixed(2), c.sumVar.toFixed(2), c.sumSave.toFixed(2), c.ausgaben.toFixed(2), c.fazit.toFixed(2)]);
+  });
+  const csv = rows.map(r=>r.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='budget_2026.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyFixFromPrev(){
+  const prev = prevMonthName(STATE.month);
+  if(!prev) return;
+  DATA[STATE.month].fix = DATA[prev].fix.map(f=>({...f}));
+  saveData(DATA); render();
 }
 
 // ─── Render Engine ───
@@ -364,10 +419,48 @@ function renderMonthView(){
   const m = STATE.month;
   const d = DATA[m];
   const c = calcMonth(m);
+  const prevM = prevMonthName(m);
+  const pc = prevM ? calcMonth(prevM) : null;
+  const hasPrevFix = prevM && DATA[prevM].fix.some(f=>f.amount>0);
+
+  // Category totals for limit rows
+  const catTotals = {};
+  CATEGORIES.forEach(cat => { catTotals[cat] = d.variable.filter(v=>v.category===cat).reduce((s,v)=>s+v.amount,0); });
+  const hasCatData = CATEGORIES.some(cat => catTotals[cat]>0 || SETTINGS.catLimits[cat]>0);
+
+  const catLimitRows = hasCatData ? `<div class="cat-limit-section">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <span class="cat-limit-label">Kategorie</span>
+      <span class="cat-limit-label">Limit / Monat</span>
+    </div>
+    ${CATEGORIES.map((cat,i)=>{
+      const total = catTotals[cat];
+      const limit = SETTINGS.catLimits[cat]||0;
+      if(!total && !limit) return '';
+      const pct = limit ? Math.min(total/limit*100,100) : 0;
+      const over = limit && total > limit;
+      return `<div class="cat-limit-row">
+        <span class="cat-limit-dot" style="background:${CAT_COLORS[i]}"></span>
+        <span class="cat-limit-name">${cat}</span>
+        ${limit ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${over?'var(--red)':CAT_COLORS[i]}"></div></div>` : '<div style="flex:1"></div>'}
+        <span class="cat-limit-amount" style="color:${over?'var(--red)':'var(--text)'}">${fmt(total)}</span>
+        <input type="number" step="50" class="cat-limit-input" placeholder="—" value="${limit||''}" data-catlimit="${cat}" title="Monatslimit ${cat}">
+      </div>`;
+    }).filter(Boolean).join('')}
+  </div>` : `<div class="cat-limit-section" style="display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11px;color:var(--text-muted)">Limits pro Kategorie setzen</span>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      ${CATEGORIES.map((cat,i)=>`<div style="display:flex;align-items:center;gap:6px">
+        <span class="cat-limit-dot" style="background:${CAT_COLORS[i]}"></span>
+        <span style="font-size:11px;min-width:52px">${cat}</span>
+        <input type="number" step="50" class="cat-limit-input" placeholder="—" value="${SETTINGS.catLimits[cat]||''}" data-catlimit="${cat}">
+      </div>`).join('')}
+    </div>
+  </div>`;
 
   return `
   <div class="header">
-    <h1>Budget <span>2026</span></h1>
+    <div><h1>Budget <span>2026</span></h1><div class="header-sub">${m}</div></div>
     <button class="header-btn" data-action="reset">Reset</button>
   </div>
 
@@ -376,15 +469,31 @@ function renderMonthView(){
   </div>
 
   <div class="summary-row">
-    <div class="summary-chip"><div class="label">Einnahmen</div><div class="value" style="color:var(--green)">${fmt(c.einnahmen)}</div></div>
-    <div class="summary-chip"><div class="label">Ausgaben</div><div class="value" style="color:var(--red)">${fmt(c.ausgaben)}</div></div>
-    <div class="summary-chip"><div class="label">Sparen</div><div class="value" style="color:var(--accent)">${fmt(c.sparen)}</div></div>
-    <div class="summary-chip"><div class="label">Fazit</div><div class="value" style="color:${c.fazit>=0?'var(--green)':'var(--red)'}">${fmt(c.fazit)}</div></div>
+    <div class="summary-chip" style="--chip-accent:var(--green)">
+      <div class="label">Einnahmen</div>
+      <div class="value" style="color:var(--green)">${fmt(c.einnahmen)}</div>
+      ${chipDelta(c.einnahmen, pc?.einnahmen, true)}
+    </div>
+    <div class="summary-chip" style="--chip-accent:var(--red)">
+      <div class="label">Ausgaben</div>
+      <div class="value" style="color:var(--red)">${fmt(c.ausgaben)}</div>
+      ${chipDelta(c.ausgaben, pc?.ausgaben, false)}
+    </div>
+    <div class="summary-chip" style="--chip-accent:var(--accent)">
+      <div class="label">Sparen</div>
+      <div class="value" style="color:var(--accent)">${fmt(c.sparen)}</div>
+      ${c.einnahmen>0?`<div class="sub">${Math.round(c.sparen/c.einnahmen*100)}% Sparquote</div>`:''}
+    </div>
+    <div class="summary-chip" style="--chip-accent:${c.fazit>=0?'var(--green)':'var(--red)'}">
+      <div class="label">Fazit</div>
+      <div class="value" style="color:${c.fazit>=0?'var(--green)':'var(--red)'}">${fmt(c.fazit)}</div>
+      ${chipDelta(c.fazit, pc?.fazit, true)}
+    </div>
   </div>
 
   <!-- Einnahmen -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Einnahmen</div>
+  <div class="card" style="--cc:var(--green)">
+    <div class="card-title">Einnahmen</div>
     <div class="input-row">
       <label>Gehalt</label>
       <input type="number" step="0.01" value="${d.gehalt||''}" placeholder="0.00" data-field="gehalt">
@@ -392,8 +501,11 @@ function renderMonthView(){
   </div>
 
   <!-- Fixkosten -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Fixkosten<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumFix)}</span></div>
+  <div class="card" style="--cc:var(--amber)">
+    <div class="card-title">Fixkosten
+      <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumFix)}</span>
+      ${hasPrevFix?`<button class="small-btn" data-action="copyprev">Vormonat</button>`:''}
+    </div>
     ${d.fix.map((f,i)=>`<div class="input-row">
       <label>${f.label}</label>
       <input type="number" step="0.01" value="${f.amount||''}" placeholder="0.00" data-fix="${i}">
@@ -401,8 +513,8 @@ function renderMonthView(){
   </div>
 
   <!-- Sparen -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Sparen<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumSave)}</span></div>
+  <div class="card" style="--cc:var(--accent)">
+    <div class="card-title">Sparen<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumSave)}</span></div>
     ${d.savings.map((s,i)=>`<div class="input-row">
       <label>${s.label}</label>
       <input type="number" step="0.01" value="${s.amount||''}" placeholder="0.00" data-save="${i}">
@@ -410,9 +522,9 @@ function renderMonthView(){
   </div>
 
   <!-- Variable Kosten -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Variable Kosten<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumVar)}</span></div>
-    ${d.variable.length===0?'<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Einträge</div>':''}
+  <div class="card" style="--cc:var(--purple)">
+    <div class="card-title">Variable Kosten<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumVar)}</span></div>
+    ${d.variable.length===0?'<div style="display:flex;flex-direction:column;align-items:center;padding:24px 16px;gap:6px;color:var(--text-muted)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.35"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg><div style="font-size:13px;font-weight:600">Keine Einträge</div><div style="font-size:11px">Tippe auf + um einen Eintrag hinzuzufügen</div></div>':''}
     ${d.variable.map((v,i)=>`<div class="var-entry">
       <div class="var-entry-row">
         <input type="date" class="var-input" value="${v.date||''}" data-var="${i}" data-vfield="date">
@@ -428,6 +540,7 @@ function renderMonthView(){
       </div>
     </div>`).join("")}
     <button class="var-add" data-action="addvar">+ Neuer Eintrag</button>
+    ${catLimitRows}
   </div>
 
   <div style="height:20px"></div>`;
@@ -471,22 +584,47 @@ function renderYearView(){
   const totals = stats.reduce((t,s)=>({einnahmen:t.einnahmen+s.einnahmen,ausgaben:t.ausgaben+s.ausgaben,sparen:t.sparen+s.sparen,fazit:t.fazit+s.fazit}),{einnahmen:0,ausgaben:0,sparen:0,fazit:0});
   const maxVal = Math.max(...stats.map(s=>Math.max(s.einnahmen,s.ausgaben)),1);
 
-  // Category totals for donut chart
   const catTotals = {};
   CATEGORIES.forEach(c=>{ catTotals[c] = MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
 
+  const sz = SETTINGS.sparZiel || 0;
+  const szPct = sz > 0 ? Math.min(totals.sparen/sz*100,100) : 0;
+  const sparZielCard = `
+  <div class="card" style="--cc:var(--accent)">
+    <div class="card-title">Sparziel 2026</div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:${sz?'10px':'14px'}">
+      <span style="font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent)">${fmt(totals.sparen)}</span>
+      ${sz>0?`<span style="font-size:13px;color:var(--text-muted)">von ${fmt(sz)}</span>`:''}
+    </div>
+    ${sz>0?`
+      <div class="progress-bar" style="margin-bottom:6px">
+        <div class="progress-fill" style="width:${szPct.toFixed(1)}%;background:var(--accent)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px">
+        <span style="font-size:11px;color:var(--text-muted)">${Math.round(szPct)}% erreicht</span>
+        <span style="font-size:11px;color:var(--text-muted)">${fmt(Math.max(sz-totals.sparen,0))} offen</span>
+      </div>
+    `:'<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Kein Ziel gesetzt — trage unten einen Betrag ein.</div>'}
+    <div class="input-row" style="padding-top:0">
+      <label>Sparziel CHF</label>
+      <input type="number" step="100" value="${sz||''}" placeholder="0" data-field="sparziel" style="font-family:'JetBrains Mono',monospace">
+    </div>
+  </div>`;
+
   return `
   <div class="header">
-    <h1>Jahres<span>übersicht</span></h1>
+    <div><h1>Jahres<span>übersicht</span></h1><div class="header-sub">2026</div></div>
     <button class="header-btn" data-action="reset">Reset</button>
   </div>
 
   <div class="summary-row">
-    <div class="summary-chip"><div class="label">Einnahmen</div><div class="value" style="color:var(--green)">${fmt(totals.einnahmen)}</div></div>
-    <div class="summary-chip"><div class="label">Ausgaben</div><div class="value" style="color:var(--red)">${fmt(totals.ausgaben)}</div></div>
-    <div class="summary-chip"><div class="label">Sparen</div><div class="value" style="color:var(--accent)">${fmt(totals.sparen)}</div></div>
-    <div class="summary-chip"><div class="label">Fazit</div><div class="value" style="color:${totals.fazit>=0?'var(--green)':'var(--red)'}">${fmt(totals.fazit)}</div></div>
+    <div class="summary-chip" style="--chip-accent:var(--green)"><div class="label">Einnahmen</div><div class="value" style="color:var(--green)">${fmt(totals.einnahmen)}</div></div>
+    <div class="summary-chip" style="--chip-accent:var(--red)"><div class="label">Ausgaben</div><div class="value" style="color:var(--red)">${fmt(totals.ausgaben)}</div></div>
+    <div class="summary-chip" style="--chip-accent:var(--accent)"><div class="label">Sparen</div><div class="value" style="color:var(--accent)">${fmt(totals.sparen)}</div>${totals.einnahmen>0?`<div class="sub">${Math.round(totals.sparen/totals.einnahmen*100)}% Sparquote</div>`:''}</div>
+    <div class="summary-chip" style="--chip-accent:${totals.fazit>=0?'var(--green)':'var(--red)'}"><div class="label">Fazit</div><div class="value" style="color:${totals.fazit>=0?'var(--green)':'var(--red)'}">${fmt(totals.fazit)}</div></div>
   </div>
+
+  ${sparZielCard}
 
   <!-- Bar Chart -->
   <div class="card">
@@ -510,7 +648,9 @@ function renderYearView(){
 
   <!-- Gesamt Übersicht -->
   <div class="card" style="overflow-x:auto">
-    <div class="card-title">Gesamt Übersicht</div>
+    <div class="card-title">Gesamt Übersicht
+      <button class="small-btn" data-action="exportcsv" style="margin-left:auto">CSV Export</button>
+    </div>
     <table class="year-table">
       <thead><tr><th>Monat</th><th>Einn.</th><th>Ausg.</th><th>Spar.</th><th>Fazit</th></tr></thead>
       <tbody>
@@ -532,8 +672,8 @@ function renderYearView(){
   </div>
 
   <!-- Variablekosten Donut -->
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Variablekosten nach Kategorie</div>
+  <div class="card" style="--cc:var(--purple)">
+    <div class="card-title">Variablekosten nach Kategorie</div>
     ${renderDonutChart(catTotals)}
   </div>
 
@@ -555,17 +695,14 @@ function renderResetModal(){
 
 // ─── Event Binding ───
 function bindEvents(){
-  // Tab navigation
   document.querySelectorAll(".tab-btn").forEach(btn=>{
     btn.onclick = ()=>{ STATE.tab=btn.dataset.tab; render(); };
   });
 
-  // Month chips
   document.querySelectorAll(".month-chip").forEach(btn=>{
     btn.onclick = ()=>{ STATE.month=btn.dataset.month; render(); };
   });
 
-  // Scroll active month into view
   const scroll = document.getElementById("monthScroll");
   if(scroll){
     const active = scroll.querySelector(".month-chip.active");
@@ -579,6 +716,13 @@ function bindEvents(){
     gehaltInput.onblur = ()=>render();
   }
 
+  // Sparziel
+  const sparZielInput = document.querySelector("[data-field='sparziel']");
+  if(sparZielInput){
+    sparZielInput.oninput = ()=>{ SETTINGS.sparZiel=parseFloat(sparZielInput.value)||0; saveSettings(); };
+    sparZielInput.onblur = ()=>render();
+  }
+
   // Fix costs
   document.querySelectorAll("[data-fix]").forEach(inp=>{
     inp.oninput = ()=>{ DATA[STATE.month].fix[inp.dataset.fix].amount=parseFloat(inp.value)||0; saveData(DATA); };
@@ -588,6 +732,12 @@ function bindEvents(){
   // Savings
   document.querySelectorAll("[data-save]").forEach(inp=>{
     inp.oninput = ()=>{ DATA[STATE.month].savings[inp.dataset.save].amount=parseFloat(inp.value)||0; saveData(DATA); };
+    inp.onblur = ()=>render();
+  });
+
+  // Category limits
+  document.querySelectorAll("[data-catlimit]").forEach(inp=>{
+    inp.oninput = ()=>{ SETTINGS.catLimits[inp.dataset.catlimit]=parseFloat(inp.value)||0; saveSettings(); };
     inp.onblur = ()=>render();
   });
 
@@ -613,6 +763,16 @@ function bindEvents(){
   // Add variable
   document.querySelectorAll("[data-action='addvar']").forEach(btn=>{
     btn.onclick = ()=>{ DATA[STATE.month].variable.push({date:"",category:"",desc:"",amount:0}); saveData(DATA); render(); };
+  });
+
+  // Copy fix from previous month
+  document.querySelectorAll("[data-action='copyprev']").forEach(btn=>{
+    btn.onclick = ()=>copyFixFromPrev();
+  });
+
+  // CSV Export
+  document.querySelectorAll("[data-action='exportcsv']").forEach(btn=>{
+    btn.onclick = ()=>exportCSV();
   });
 
   // Reset
