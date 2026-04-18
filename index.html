@@ -414,7 +414,7 @@ function renderMonthView(){
     ${d.variable.length===0?'<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Einträge</div>':''}
     ${d.variable.map((v,i)=>`<div class="var-entry">
       <div class="var-entry-row">
-        <input type="date" class="var-input" value="${v.date}" data-var="${i}" data-vfield="date">
+        <input type="date" class="var-input" value="${v.date||''}" data-var="${i}" data-vfield="date">
         <select class="var-input" data-var="${i}" data-vfield="category">
           <option value="">Kategorie</option>
           ${CATEGORIES.map(cat=>`<option value="${cat}" ${v.category===cat?'selected':''}>${cat}</option>`).join("")}
@@ -547,7 +547,7 @@ function bindEvents(){
   const scroll = document.getElementById("monthScroll");
   if(scroll){
     const active = scroll.querySelector(".month-chip.active");
-    if(active) active.scrollIntoView({behavior:"instant",block:"nearest",inline:"center"});
+    if(active) active.scrollIntoView({behavior:"auto",block:"nearest",inline:"center"});
   }
 
   // Gehalt

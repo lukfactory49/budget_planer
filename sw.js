@@ -8,9 +8,16 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
+  e.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    for (const asset of ASSETS) {
+      try {
+        await cache.add(asset);
+      } catch (err) {
+        console.warn('Failed to cache', asset, err);
+      }
+    }
+  })());
   self.skipWaiting();
 });
 
