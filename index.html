@@ -294,6 +294,7 @@ input[type=number] { -moz-appearance:textfield; }
 const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const MONTHS_SHORT = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 const CATEGORIES = ["Essen","Hobby","Freizeit","Ferien","Haushalt"];
+const CAT_COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
 const FIX_LABELS = ["Miete/Essen","Krankenkasse","Handy/Spotify","Motorrad Vers.","Weiterbildung","Steuern"];
 const SAVE_LABELS = ["Sparkonto","Invest.","Säule 3a"];
 const STORAGE_KEY = "budget2026_v2";
@@ -432,18 +433,47 @@ function renderMonthView(){
   <div style="height:20px"></div>`;
 }
 
+// ─── Donut Chart ───
+function renderDonutChart(catTotals) {
+  const total = CATEGORIES.reduce((s,c) => s + (catTotals[c]||0), 0);
+  if (!total) return '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Daten</div>';
+  const r = 40, cx = 60, cy = 60, circ = 2 * Math.PI * r;
+  let cumAngle = -90;
+  const segments = CATEGORIES.map((cat,i) => {
+    const pct = (catTotals[cat]||0) / total;
+    const dash = pct * circ;
+    if (!dash) return '';
+    const seg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${CAT_COLORS[i]}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" transform="rotate(${cumAngle} ${cx} ${cy})"/>`;
+    cumAngle += pct * 360;
+    return seg;
+  }).join('');
+  const legend = CATEGORIES.map((cat,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+      <span style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[i]};flex-shrink:0"></span>
+      <span style="flex:1;font-size:13px;color:var(--text-muted)">${cat}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px">${fmt(catTotals[cat]||0)}</span>
+    </div>`).join('');
+  return `
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <svg viewBox="0 0 120 120" width="130" height="130" style="flex-shrink:0">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="18"/>
+        ${segments}
+        <text x="${cx}" y="${cy-5}" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Outfit,sans-serif">Gesamt</text>
+        <text x="${cx}" y="${cy+8}" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="700" font-family="JetBrains Mono,monospace">${fmt(total)}</text>
+      </svg>
+      <div style="flex:1;min-width:140px">${legend}</div>
+    </div>`;
+}
+
 // ─── Year View ───
 function renderYearView(){
   const stats = MONTHS.map(m=>({month:m, ...calcMonth(m)}));
   const totals = stats.reduce((t,s)=>({einnahmen:t.einnahmen+s.einnahmen,ausgaben:t.ausgaben+s.ausgaben,sparen:t.sparen+s.sparen,fazit:t.fazit+s.fazit}),{einnahmen:0,ausgaben:0,sparen:0,fazit:0});
   const maxVal = Math.max(...stats.map(s=>Math.max(s.einnahmen,s.ausgaben)),1);
 
-  // Category breakdown
-  const catData = MONTHS.map((m,i)=>{
-    const cats = {};
-    CATEGORIES.forEach(c=>{ cats[c] = DATA[m].variable.filter(v=>v.category===c).reduce((s,v)=>s+v.amount,0); });
-    return {month:MONTHS_SHORT[i], ...cats};
-  });
+  // Category totals for donut chart
+  const catTotals = {};
+  CATEGORIES.forEach(c=>{ catTotals[c] = MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
 
   return `
   <div class="header">
@@ -501,18 +531,10 @@ function renderYearView(){
     </table>
   </div>
 
-  <!-- Variablekosten Breakdown -->
-  <div class="card" style="overflow-x:auto">
-    <div class="card-title">Variablekosten nach Kategorie</div>
-    <table class="cat-table">
-      <thead><tr><th>Mon.</th>${CATEGORIES.map(c=>`<th>${c}</th>`).join("")}</tr></thead>
-      <tbody>
-        ${catData.map(cd=>`<tr>
-          <td>${cd.month}</td>
-          ${CATEGORIES.map(c=>`<td style="color:${cd[c]?'var(--text)':'var(--text-muted)'}">${fmt(cd[c])}</td>`).join("")}
-        </tr>`).join("")}
-      </tbody>
-    </table>
+  <!-- Variablekosten Donut -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Variablekosten nach Kategorie</div>
+    ${renderDonutChart(catTotals)}
   </div>
 
   <div style="height:20px"></div>`;
