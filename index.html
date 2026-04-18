@@ -46,7 +46,6 @@ body {
   padding-bottom: calc(68px + var(--safe-bottom));
 }
 
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
@@ -61,38 +60,36 @@ body {
 .header h1 { font-size:22px; font-weight:800; letter-spacing:-.5px; }
 .header h1 span { color:var(--accent); }
 .header-sub { font-size:13px; color:var(--text-muted); font-weight:500; margin-top:2px; }
-.header-actions { display:flex; gap:8px; }
 .header-btn {
   background:var(--card); border:1px solid var(--border); color:var(--text-muted);
   padding:8px 14px; border-radius:10px; font-size:12px; font-weight:600;
   font-family:inherit; cursor:pointer; transition:color .2s;
 }
 
-/* ── Tab Bar (Bottom Nav) ── */
+/* ── Tab Bar ── */
 .tab-bar {
-  position: fixed; bottom:0; left:0; right:0;
-  background: #0c0f16ee;
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex;
-  padding: 8px 12px calc(8px + var(--safe-bottom));
-  z-index: 100;
+  position:fixed; bottom:0; left:0; right:0;
+  background:#0c0f16ee;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding:8px 12px calc(8px + var(--safe-bottom));
+  z-index:100;
 }
 .tab-btn {
   flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
   background:none; border:none; color:var(--text-muted);
   font-family:inherit; font-size:10px; font-weight:600;
-  padding:6px 4px; cursor:pointer; transition: color .2s;
+  padding:6px 4px; cursor:pointer; transition:color .2s;
 }
 .tab-btn.active { color:var(--accent); }
 .tab-btn svg { width:22px; height:22px; }
 
-/* ── Month Selector (Horizontal Scroll) ── */
+/* ── Month Selector ── */
 .month-scroll {
   display:flex; gap:6px; padding:0 20px 16px;
   overflow-x:auto; scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
 }
 .month-scroll::-webkit-scrollbar { display:none; }
 .month-chip {
@@ -101,11 +98,9 @@ body {
   background:var(--card); border:1px solid var(--border);
   color:var(--text-muted); font-size:13px; font-weight:600;
   font-family:inherit; cursor:pointer; white-space:nowrap;
-  transition: all .15s;
+  transition:all .15s;
 }
-.month-chip.active {
-  background:var(--accent); border-color:var(--accent); color:#fff;
-}
+.month-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
 /* ── Cards ── */
 .card {
@@ -133,16 +128,25 @@ body {
   font-size:10px; font-weight:700; text-transform:uppercase;
   letter-spacing:.8px; color:var(--text-muted); margin-bottom:4px;
 }
-.summary-chip .value {
-  font-size:20px; font-weight:700;
-  font-family:'JetBrains Mono',monospace;
-}
+.summary-chip .value { font-size:20px; font-weight:700; font-family:'JetBrains Mono',monospace; }
 .summary-chip .sub { font-size:11px; color:var(--text-muted); margin-top:3px; }
 
-/* ── Delta badge ── */
+/* ── Delta ── */
 .delta { font-size:10px; font-weight:700; margin-top:2px; }
 .delta.pos { color:var(--green); }
 .delta.neg { color:var(--red); }
+
+/* ── Empty Hint ── */
+.empty-hint {
+  margin:0 16px 12px;
+  padding:14px 16px;
+  background:var(--accent-dim);
+  border:1px solid var(--accent);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius);
+}
+.empty-hint-title { font-size:13px; font-weight:700; color:var(--accent); margin-bottom:3px; }
+.empty-hint-sub { font-size:12px; color:var(--text-muted); }
 
 /* ── Input Rows ── */
 .input-row {
@@ -165,8 +169,28 @@ body {
   outline:none; width:130px; text-align:right;
   -webkit-appearance:none;
 }
-.input-row input:focus, .input-row select:focus {
-  border-color:var(--accent);
+.input-row input:focus, .input-row select:focus { border-color:var(--accent); }
+
+/* ── Fix Label Input ── */
+.fix-label-input {
+  background:transparent; border:1px solid transparent;
+  color:var(--text-muted); font-family:'Outfit',sans-serif;
+  font-size:13px; font-weight:500;
+  outline:none; flex:1; min-width:0;
+  padding:4px 6px; border-radius:6px; margin-left:-6px;
+  transition:border-color .15s, background .15s;
+}
+.fix-label-input:focus {
+  border-color:var(--border); background:var(--bg); color:var(--text);
+}
+
+/* ── Fix Rows Wrapper ── */
+.fix-rows > .input-row:last-child { border-bottom:none; }
+.fix-add-btn {
+  width:100%; padding:8px; border-radius:10px;
+  background:transparent; border:1px dashed var(--border);
+  color:var(--text-muted); font-size:12px; font-weight:600;
+  font-family:inherit; cursor:pointer; margin-top:8px;
 }
 
 /* ── Variable Costs ── */
@@ -176,8 +200,8 @@ body {
 }
 .var-entry:last-child { margin-bottom:0; }
 .var-entry-row {
-  display:grid; grid-template-columns:1fr 1fr; gap:8px;
-  margin-bottom:6px;
+  display:grid; grid-template-columns:1fr 1fr auto; gap:8px;
+  margin-bottom:6px; align-items:center;
 }
 .var-input {
   background:var(--bg); border:1px solid var(--border);
@@ -186,13 +210,12 @@ body {
   box-sizing:border-box; min-width:0;
 }
 .var-input:focus { border-color:var(--accent); }
-.var-input-amount {
-  font-family:'JetBrains Mono',monospace; text-align:right;
-}
+.var-input-amount { font-family:'JetBrains Mono',monospace; text-align:right; }
 .var-delete {
   background:var(--red-dim); border:none; color:var(--red);
   width:36px; height:36px; border-radius:10px;
   font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
 }
 .var-add {
   width:100%; padding:12px; border-radius:12px;
@@ -201,7 +224,41 @@ body {
   font-family:inherit; cursor:pointer; margin-top:10px;
 }
 
-/* ── Category Limit Rows ── */
+/* ── Recurring Button ── */
+.recurring-btn {
+  background:none; border:1px solid var(--border); color:var(--text-muted);
+  width:32px; height:32px; border-radius:8px; font-size:15px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all .15s;
+}
+.recurring-btn.active {
+  background:var(--accent-dim); border-color:var(--accent); color:var(--accent);
+}
+
+/* ── Quick Add Form ── */
+.qa-form {
+  display:flex; gap:8px; align-items:center;
+  margin-bottom:12px; padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.qa-input {
+  background:var(--bg); border:1px solid var(--border);
+  color:var(--text); border-radius:10px; padding:10px 12px;
+  font-family:inherit; font-size:13px; outline:none;
+  box-sizing:border-box; min-width:0;
+}
+.qa-input:focus { border-color:var(--accent); }
+.qa-amount {
+  font-family:'JetBrains Mono',monospace; text-align:right; width:90px; flex-shrink:0;
+}
+.qa-btn {
+  background:var(--accent); border:none; color:#fff;
+  width:36px; height:36px; border-radius:10px;
+  font-size:22px; font-weight:300; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+
+/* ── Cat Limit Rows ── */
 .cat-limit-section { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
 .cat-limit-row { display:flex; align-items:center; gap:8px; padding:5px 0; }
 .cat-limit-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
@@ -227,10 +284,8 @@ body {
   text-transform:none; letter-spacing:0;
 }
 
-/* ── Jahresübersicht Table ── */
-.year-table {
-  width:100%; border-collapse:collapse; font-size:13px;
-}
+/* ── Year Table ── */
+.year-table { width:100%; border-collapse:collapse; font-size:13px; }
 .year-table th {
   text-align:right; padding:10px 8px; font-size:10px;
   font-weight:700; text-transform:uppercase; letter-spacing:.5px;
@@ -246,88 +301,67 @@ body {
 }
 .year-table tr.total-row { background:var(--card-hover); }
 .year-table tr.total-row td { font-weight:700; font-size:13px; }
+.year-table tr.max-row td:first-child { color:var(--red); }
 
 /* ── Bar Chart ── */
 .chart-container { padding:0 4px; }
-.chart-bars {
-  display:flex; align-items:flex-end; gap:4px; height:160px;
-}
-.chart-col {
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-}
-.chart-pair {
-  display:flex; gap:2px; align-items:flex-end; width:100%; height:136px;
-}
-.chart-bar {
-  flex:1; border-radius:3px 3px 0 0; min-height:0;
-  transition: height .4s ease;
-}
+.chart-bars { display:flex; align-items:flex-end; gap:4px; height:160px; }
+.chart-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.chart-pair { display:flex; gap:2px; align-items:flex-end; width:100%; height:136px; }
+.chart-bar { flex:1; border-radius:3px 3px 0 0; min-height:0; transition:height .4s ease; }
 .chart-label { font-size:9px; color:var(--text-muted); font-weight:600; }
-.chart-legend {
-  display:flex; gap:16px; justify-content:center; margin-top:12px;
-}
-.chart-legend span {
-  display:flex; align-items:center; gap:5px;
-  font-size:11px; color:var(--text-muted);
-}
+.chart-legend { display:flex; gap:16px; justify-content:center; margin-top:12px; }
+.chart-legend span { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-muted); }
 .chart-legend-dot { width:10px; height:10px; border-radius:3px; }
 
 /* ── Modal ── */
 .modal-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:200;
   display:flex; align-items:flex-end; justify-content:center;
-  animation: fadeIn .2s;
+  animation:fadeIn .2s;
 }
 .modal {
   background:var(--card); border-radius:20px 20px 0 0;
   padding:28px 24px calc(28px + var(--safe-bottom));
   width:100%; max-width:500px;
-  animation: slideUp .25s ease;
+  animation:slideUp .25s ease;
 }
 .modal h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
 .modal p { font-size:14px; color:var(--text-muted); margin-bottom:24px; line-height:1.5; }
 .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-.modal-btn {
-  padding:10px 22px; border-radius:12px; border:none;
-  font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;
-}
+.modal-btn { padding:10px 22px; border-radius:12px; border:none; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; }
 .modal-btn-cancel { background:var(--bg); color:var(--text-muted); }
 .modal-btn-danger { background:var(--red-dim); color:var(--red); }
 
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 
-/* Hide number input spinners */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
 </style>
 </head>
 <body>
-
 <div id="app"></div>
-
 <script>
-// ─── Data ───
+// ─── Constants ───
 const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const MONTHS_SHORT = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 const CATEGORIES = ["Essen","Hobby","Freizeit","Ferien","Haushalt"];
 const CAT_COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
-const FIX_LABELS = ["Miete/Essen","Krankenkasse","Handy/Spotify","Motorrad Vers.","Weiterbildung","Steuern"];
+const FIX_LABELS_DEFAULT = ["Miete/Essen","Krankenkasse","Handy/Spotify","Motorrad Vers.","Weiterbildung","Steuern"];
 const SAVE_LABELS = ["Sparkonto","Invest.","Säule 3a"];
 const STORAGE_KEY = "budget2026_v2";
 const SETTINGS_KEY = "budget2026_settings_v1";
 
 const fmt = v => new Intl.NumberFormat("de-CH",{style:"currency",currency:"CHF"}).format(v||0);
-const fmtShort = v => {
-  if(Math.abs(v)>=1000) return (v/1000).toFixed(1)+"k";
-  return v.toFixed(0);
-};
+const fmtShort = v => { if(Math.abs(v)>=1000) return (v/1000).toFixed(1)+"k"; return v.toFixed(0); };
 
+// ─── Data ───
 function initMonth(){
   return {
     gehalt:0,
-    fix: FIX_LABELS.map(l=>({label:l,amount:0})),
+    fix: FIX_LABELS_DEFAULT.map(l=>({label:l,amount:0})),
     savings: SAVE_LABELS.map(l=>({label:l,amount:0})),
     variable: []
   };
@@ -347,7 +381,7 @@ function saveSettings(){ try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SE
 
 let DATA = loadData();
 let SETTINGS = loadSettings();
-let STATE = { tab:"month", month:MONTHS[new Date().getMonth()], showReset:false };
+let STATE = { tab:"month", month:MONTHS[new Date().getMonth()], showReset:false, qa:{desc:'',amount:''} };
 
 // ─── Helpers ───
 function calcMonth(m){
@@ -369,14 +403,40 @@ function chipDelta(curr, prev, higherIsBetter){
   return `<div class="delta ${good?'pos':'neg'}">${d>0?'↑':'↓'} ${fmtShort(Math.abs(d))}</div>`;
 }
 
+function isMonthEmpty(m){
+  const d = DATA[m];
+  return d.gehalt===0 && d.fix.every(f=>f.amount===0) && d.savings.every(s=>s.amount===0) && d.variable.length===0;
+}
+
+function haptic(ms=10){ if(navigator.vibrate) navigator.vibrate(ms); }
+
+function autoFillRecurring(month){
+  const mi = MONTHS.indexOf(month);
+  if(mi===0) return;
+  const prev = MONTHS[mi-1];
+  DATA[prev].variable.filter(v=>v.recurring).forEach(rv=>{
+    const exists = DATA[month].variable.some(v=>v.recurring && v.desc===rv.desc && v.category===rv.category);
+    if(!exists) DATA[month].variable.push({...rv, date:''});
+  });
+  saveData(DATA);
+}
+
+function switchMonth(m){
+  STATE.month = m;
+  STATE.qa = {desc:'',amount:''};
+  autoFillRecurring(m);
+  haptic();
+  render();
+}
+
 function exportCSV(){
   const rows = [['Monat','Einnahmen','Fixkosten','Variabel','Sparen','Ausgaben','Fazit']];
   MONTHS.forEach(m=>{
     const c = calcMonth(m);
-    rows.push([m, c.einnahmen.toFixed(2), c.sumFix.toFixed(2), c.sumVar.toFixed(2), c.sumSave.toFixed(2), c.ausgaben.toFixed(2), c.fazit.toFixed(2)]);
+    rows.push([m,c.einnahmen.toFixed(2),c.sumFix.toFixed(2),c.sumVar.toFixed(2),c.sumSave.toFixed(2),c.ausgaben.toFixed(2),c.fazit.toFixed(2)]);
   });
   const csv = rows.map(r=>r.join(';')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download='budget_2026.csv'; a.click();
   URL.revokeObjectURL(url);
@@ -386,7 +446,7 @@ function copyFixFromPrev(){
   const prev = prevMonthName(STATE.month);
   if(!prev) return;
   DATA[STATE.month].fix = DATA[prev].fix.map(f=>({...f}));
-  saveData(DATA); render();
+  saveData(DATA); haptic(); render();
 }
 
 // ─── Render Engine ───
@@ -422,40 +482,31 @@ function renderMonthView(){
   const prevM = prevMonthName(m);
   const pc = prevM ? calcMonth(prevM) : null;
   const hasPrevFix = prevM && DATA[prevM].fix.some(f=>f.amount>0);
+  const empty = isMonthEmpty(m);
 
-  // Category totals for limit rows
+  // Category totals
   const catTotals = {};
-  CATEGORIES.forEach(cat => { catTotals[cat] = d.variable.filter(v=>v.category===cat).reduce((s,v)=>s+v.amount,0); });
-  const hasCatData = CATEGORIES.some(cat => catTotals[cat]>0 || SETTINGS.catLimits[cat]>0);
+  CATEGORIES.forEach(cat=>{ catTotals[cat]=d.variable.filter(v=>v.category===cat).reduce((s,v)=>s+v.amount,0); });
+  const hasCatData = CATEGORIES.some(cat=>catTotals[cat]>0||SETTINGS.catLimits[cat]>0);
 
-  const catLimitRows = hasCatData ? `<div class="cat-limit-section">
+  const catLimitSection = `<div class="cat-limit-section">
     <div style="display:flex;justify-content:space-between;margin-bottom:8px">
       <span class="cat-limit-label">Kategorie</span>
       <span class="cat-limit-label">Limit / Monat</span>
     </div>
     ${CATEGORIES.map((cat,i)=>{
-      const total = catTotals[cat];
-      const limit = SETTINGS.catLimits[cat]||0;
-      if(!total && !limit) return '';
-      const pct = limit ? Math.min(total/limit*100,100) : 0;
-      const over = limit && total > limit;
+      const total=catTotals[cat]; const limit=SETTINGS.catLimits[cat]||0;
+      if(!total&&!limit) return '';
+      const pct=limit?Math.min(total/limit*100,100):0; const over=limit&&total>limit;
       return `<div class="cat-limit-row">
         <span class="cat-limit-dot" style="background:${CAT_COLORS[i]}"></span>
         <span class="cat-limit-name">${cat}</span>
-        ${limit ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${over?'var(--red)':CAT_COLORS[i]}"></div></div>` : '<div style="flex:1"></div>'}
+        ${limit?`<div class="progress-bar"><div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${over?'var(--red)':CAT_COLORS[i]}"></div></div>`:'<div style="flex:1"></div>'}
         <span class="cat-limit-amount" style="color:${over?'var(--red)':'var(--text)'}">${fmt(total)}</span>
-        <input type="number" step="50" class="cat-limit-input" placeholder="—" value="${limit||''}" data-catlimit="${cat}" title="Monatslimit ${cat}">
+        <input type="number" inputmode="decimal" step="50" class="cat-limit-input" placeholder="—" value="${limit||''}" data-catlimit="${cat}">
       </div>`;
     }).filter(Boolean).join('')}
-  </div>` : `<div class="cat-limit-section" style="display:flex;justify-content:space-between;align-items:center">
-    <span style="font-size:11px;color:var(--text-muted)">Limits pro Kategorie setzen</span>
-    <div style="display:flex;flex-direction:column;gap:4px">
-      ${CATEGORIES.map((cat,i)=>`<div style="display:flex;align-items:center;gap:6px">
-        <span class="cat-limit-dot" style="background:${CAT_COLORS[i]}"></span>
-        <span style="font-size:11px;min-width:52px">${cat}</span>
-        <input type="number" step="50" class="cat-limit-input" placeholder="—" value="${SETTINGS.catLimits[cat]||''}" data-catlimit="${cat}">
-      </div>`).join('')}
-    </div>
+    ${!hasCatData?`<div style="font-size:12px;color:var(--text-muted)">Trage Limits ein sobald du Einträge hast.</div>`:''}
   </div>`;
 
   return `
@@ -468,16 +519,18 @@ function renderMonthView(){
     ${MONTHS.map((mo,i)=>`<button class="month-chip ${mo===m?'active':''}" data-month="${mo}">${MONTHS_SHORT[i]}</button>`).join("")}
   </div>
 
+  ${empty?`<div class="empty-hint"><div class="empty-hint-title">Noch keine Daten für ${m}</div><div class="empty-hint-sub">Trage dein Gehalt ein um zu starten.</div></div>`:''}
+
   <div class="summary-row">
     <div class="summary-chip" style="--chip-accent:var(--green)">
       <div class="label">Einnahmen</div>
       <div class="value" style="color:var(--green)">${fmt(c.einnahmen)}</div>
-      ${chipDelta(c.einnahmen, pc?.einnahmen, true)}
+      ${chipDelta(c.einnahmen,pc?.einnahmen,true)}
     </div>
     <div class="summary-chip" style="--chip-accent:var(--red)">
       <div class="label">Ausgaben</div>
       <div class="value" style="color:var(--red)">${fmt(c.ausgaben)}</div>
-      ${chipDelta(c.ausgaben, pc?.ausgaben, false)}
+      ${chipDelta(c.ausgaben,pc?.ausgaben,false)}
     </div>
     <div class="summary-chip" style="--chip-accent:var(--accent)">
       <div class="label">Sparen</div>
@@ -487,7 +540,7 @@ function renderMonthView(){
     <div class="summary-chip" style="--chip-accent:${c.fazit>=0?'var(--green)':'var(--red)'}">
       <div class="label">Fazit</div>
       <div class="value" style="color:${c.fazit>=0?'var(--green)':'var(--red)'}">${fmt(c.fazit)}</div>
-      ${chipDelta(c.fazit, pc?.fazit, true)}
+      ${chipDelta(c.fazit,pc?.fazit,true)}
     </div>
   </div>
 
@@ -496,7 +549,7 @@ function renderMonthView(){
     <div class="card-title">Einnahmen</div>
     <div class="input-row">
       <label>Gehalt</label>
-      <input type="number" step="0.01" value="${d.gehalt||''}" placeholder="0.00" data-field="gehalt">
+      <input type="number" inputmode="decimal" step="0.01" value="${d.gehalt||''}" placeholder="0.00" data-field="gehalt">
     </div>
   </div>
 
@@ -505,11 +558,15 @@ function renderMonthView(){
     <div class="card-title">Fixkosten
       <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumFix)}</span>
       ${hasPrevFix?`<button class="small-btn" data-action="copyprev">Vormonat</button>`:''}
+      <button class="small-btn" data-action="addfix">+</button>
     </div>
-    ${d.fix.map((f,i)=>`<div class="input-row">
-      <label>${f.label}</label>
-      <input type="number" step="0.01" value="${f.amount||''}" placeholder="0.00" data-fix="${i}">
-    </div>`).join("")}
+    <div class="fix-rows">
+      ${d.fix.map((f,i)=>`<div class="input-row">
+        <input type="text" class="fix-label-input" value="${f.label||''}" placeholder="Bezeichnung" data-fixlabel="${i}">
+        <input type="number" inputmode="decimal" step="0.01" value="${f.amount||''}" placeholder="0.00" data-fix="${i}">
+        <button class="var-delete" data-fixdel="${i}">×</button>
+      </div>`).join("")}
+    </div>
   </div>
 
   <!-- Sparen -->
@@ -517,14 +574,19 @@ function renderMonthView(){
     <div class="card-title">Sparen<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumSave)}</span></div>
     ${d.savings.map((s,i)=>`<div class="input-row">
       <label>${s.label}</label>
-      <input type="number" step="0.01" value="${s.amount||''}" placeholder="0.00" data-save="${i}">
+      <input type="number" inputmode="decimal" step="0.01" value="${s.amount||''}" placeholder="0.00" data-save="${i}">
     </div>`).join("")}
   </div>
 
   <!-- Variable Kosten -->
   <div class="card" style="--cc:var(--purple)">
     <div class="card-title">Variable Kosten<span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0">${fmt(c.sumVar)}</span></div>
-    ${d.variable.length===0?'<div style="display:flex;flex-direction:column;align-items:center;padding:24px 16px;gap:6px;color:var(--text-muted)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.35"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg><div style="font-size:13px;font-weight:600">Keine Einträge</div><div style="font-size:11px">Tippe auf + um einen Eintrag hinzuzufügen</div></div>':''}
+    <div class="qa-form">
+      <input type="text" class="qa-input" style="flex:1" placeholder="Beschreibung" id="qaDesc" value="${STATE.qa.desc||''}" data-qa="desc">
+      <input type="number" inputmode="decimal" step="0.01" class="qa-input qa-amount" placeholder="CHF" id="qaAmount" value="${STATE.qa.amount||''}" data-qa="amount">
+      <button class="qa-btn" data-action="quickadd">+</button>
+    </div>
+    ${d.variable.length===0?'<div style="display:flex;flex-direction:column;align-items:center;padding:16px 16px 8px;gap:6px;color:var(--text-muted)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.35"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg><div style="font-size:13px;font-weight:600">Keine Einträge</div></div>':''}
     ${d.variable.map((v,i)=>`<div class="var-entry">
       <div class="var-entry-row">
         <input type="date" class="var-input" value="${v.date||''}" data-var="${i}" data-vfield="date">
@@ -532,84 +594,62 @@ function renderMonthView(){
           <option value="">Kategorie</option>
           ${CATEGORIES.map(cat=>`<option value="${cat}" ${v.category===cat?'selected':''}>${cat}</option>`).join("")}
         </select>
+        <button class="recurring-btn ${v.recurring?'active':''}" data-varrecur="${i}" title="Wiederkehrend">↺</button>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <input type="text" class="var-input" style="flex:1" placeholder="Beschreibung" value="${v.desc||''}" data-var="${i}" data-vfield="desc">
-        <input type="number" step="0.01" class="var-input var-input-amount" style="width:100px" placeholder="0.00" value="${v.amount||''}" data-var="${i}" data-vfield="amount">
+        <input type="number" inputmode="decimal" step="0.01" class="var-input var-input-amount" style="width:100px" placeholder="0.00" value="${v.amount||''}" data-var="${i}" data-vfield="amount">
         <button class="var-delete" data-vardel="${i}">×</button>
       </div>
     </div>`).join("")}
     <button class="var-add" data-action="addvar">+ Neuer Eintrag</button>
-    ${catLimitRows}
+    ${catLimitSection}
   </div>
 
   <div style="height:20px"></div>`;
 }
 
 // ─── Donut Chart ───
-function renderDonutChart(catTotals) {
-  const total = CATEGORIES.reduce((s,c) => s + (catTotals[c]||0), 0);
-  if (!total) return '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Daten</div>';
-  const r = 40, cx = 60, cy = 60, circ = 2 * Math.PI * r;
-  let cumAngle = -90;
-  const segments = CATEGORIES.map((cat,i) => {
-    const pct = (catTotals[cat]||0) / total;
-    const dash = pct * circ;
-    if (!dash) return '';
-    const seg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${CAT_COLORS[i]}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" transform="rotate(${cumAngle} ${cx} ${cy})"/>`;
-    cumAngle += pct * 360;
-    return seg;
+function renderDonutChart(catTotals){
+  const total = CATEGORIES.reduce((s,c)=>s+(catTotals[c]||0),0);
+  if(!total) return '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">Keine Daten</div>';
+  const r=40,cx=60,cy=60,circ=2*Math.PI*r;
+  let cumAngle=-90;
+  const segments = CATEGORIES.map((cat,i)=>{
+    const pct=(catTotals[cat]||0)/total; const dash=pct*circ;
+    if(!dash) return '';
+    const seg=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${CAT_COLORS[i]}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" transform="rotate(${cumAngle} ${cx} ${cy})"/>`;
+    cumAngle+=pct*360; return seg;
   }).join('');
-  const legend = CATEGORIES.map((cat,i) => `
+  const legend = CATEGORIES.map((cat,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
       <span style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[i]};flex-shrink:0"></span>
       <span style="flex:1;font-size:13px;color:var(--text-muted)">${cat}</span>
       <span style="font-family:'JetBrains Mono',monospace;font-size:13px">${fmt(catTotals[cat]||0)}</span>
     </div>`).join('');
-  return `
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <svg viewBox="0 0 120 120" width="130" height="130" style="flex-shrink:0">
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="18"/>
-        ${segments}
-        <text x="${cx}" y="${cy-5}" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Outfit,sans-serif">Gesamt</text>
-        <text x="${cx}" y="${cy+8}" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="700" font-family="JetBrains Mono,monospace">${fmt(total)}</text>
-      </svg>
-      <div style="flex:1;min-width:140px">${legend}</div>
-    </div>`;
+  return `<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <svg viewBox="0 0 120 120" width="130" height="130" style="flex-shrink:0">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="18"/>
+      ${segments}
+      <text x="${cx}" y="${cy-5}" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Outfit,sans-serif">Gesamt</text>
+      <text x="${cx}" y="${cy+8}" text-anchor="middle" fill="var(--text)" font-size="9" font-weight="700" font-family="JetBrains Mono,monospace">${fmt(total)}</text>
+    </svg>
+    <div style="flex:1;min-width:140px">${legend}</div>
+  </div>`;
 }
 
 // ─── Year View ───
 function renderYearView(){
-  const stats = MONTHS.map(m=>({month:m, ...calcMonth(m)}));
+  const stats = MONTHS.map(m=>({month:m,...calcMonth(m)}));
   const totals = stats.reduce((t,s)=>({einnahmen:t.einnahmen+s.einnahmen,ausgaben:t.ausgaben+s.ausgaben,sparen:t.sparen+s.sparen,fazit:t.fazit+s.fazit}),{einnahmen:0,ausgaben:0,sparen:0,fazit:0});
   const maxVal = Math.max(...stats.map(s=>Math.max(s.einnahmen,s.ausgaben)),1);
+  const maxAusgaben = Math.max(...stats.map(s=>s.ausgaben));
 
   const catTotals = {};
-  CATEGORIES.forEach(c=>{ catTotals[c] = MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
+  CATEGORIES.forEach(c=>{ catTotals[c]=MONTHS.reduce((s,m)=>s+DATA[m].variable.filter(v=>v.category===c).reduce((a,v)=>a+v.amount,0),0); });
 
-  const sz = SETTINGS.sparZiel || 0;
-  const szPct = sz > 0 ? Math.min(totals.sparen/sz*100,100) : 0;
-  const sparZielCard = `
-  <div class="card" style="--cc:var(--accent)">
-    <div class="card-title">Sparziel 2026</div>
-    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:${sz?'10px':'14px'}">
-      <span style="font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent)">${fmt(totals.sparen)}</span>
-      ${sz>0?`<span style="font-size:13px;color:var(--text-muted)">von ${fmt(sz)}</span>`:''}
-    </div>
-    ${sz>0?`
-      <div class="progress-bar" style="margin-bottom:6px">
-        <div class="progress-fill" style="width:${szPct.toFixed(1)}%;background:var(--accent)"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:14px">
-        <span style="font-size:11px;color:var(--text-muted)">${Math.round(szPct)}% erreicht</span>
-        <span style="font-size:11px;color:var(--text-muted)">${fmt(Math.max(sz-totals.sparen,0))} offen</span>
-      </div>
-    `:'<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Kein Ziel gesetzt — trage unten einen Betrag ein.</div>'}
-    <div class="input-row" style="padding-top:0">
-      <label>Sparziel CHF</label>
-      <input type="number" step="100" value="${sz||''}" placeholder="0" data-field="sparziel" style="font-family:'JetBrains Mono',monospace">
-    </div>
-  </div>`;
+  const sz=SETTINGS.sparZiel||0;
+  const szPct=sz>0?Math.min(totals.sparen/sz*100,100):0;
 
   return `
   <div class="header">
@@ -624,7 +664,27 @@ function renderYearView(){
     <div class="summary-chip" style="--chip-accent:${totals.fazit>=0?'var(--green)':'var(--red)'}"><div class="label">Fazit</div><div class="value" style="color:${totals.fazit>=0?'var(--green)':'var(--red)'}">${fmt(totals.fazit)}</div></div>
   </div>
 
-  ${sparZielCard}
+  <!-- Sparziel -->
+  <div class="card" style="--cc:var(--accent)">
+    <div class="card-title">Sparziel 2026</div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:${sz?'10px':'14px'}">
+      <span style="font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent)">${fmt(totals.sparen)}</span>
+      ${sz>0?`<span style="font-size:13px;color:var(--text-muted)">von ${fmt(sz)}</span>`:''}
+    </div>
+    ${sz>0?`
+      <div class="progress-bar" style="margin-bottom:6px">
+        <div class="progress-fill" style="width:${szPct.toFixed(1)}%;background:var(--accent)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px">
+        <span style="font-size:11px;color:var(--text-muted)">${Math.round(szPct)}% erreicht</span>
+        <span style="font-size:11px;color:var(--text-muted)">${fmt(Math.max(sz-totals.sparen,0))} offen</span>
+      </div>`
+    :'<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Kein Ziel gesetzt — trage unten einen Betrag ein.</div>'}
+    <div class="input-row" style="padding-top:0">
+      <label>Sparziel CHF</label>
+      <input type="number" inputmode="decimal" step="100" value="${sz||''}" placeholder="0" data-field="sparziel">
+    </div>
+  </div>
 
   <!-- Bar Chart -->
   <div class="card">
@@ -654,13 +714,16 @@ function renderYearView(){
     <table class="year-table">
       <thead><tr><th>Monat</th><th>Einn.</th><th>Ausg.</th><th>Spar.</th><th>Fazit</th></tr></thead>
       <tbody>
-        ${stats.map(s=>`<tr data-goto="${s.month}">
-          <td>${s.month}</td>
-          <td style="color:var(--green)">${fmt(s.einnahmen)}</td>
-          <td style="color:var(--red)">${fmt(s.ausgaben)}</td>
-          <td style="color:var(--accent)">${fmt(s.sparen)}</td>
-          <td style="color:${s.fazit>=0?'var(--green)':'var(--red)'}">${fmt(s.fazit)}</td>
-        </tr>`).join("")}
+        ${stats.map(s=>{
+          const isMax = s.ausgaben>0 && s.ausgaben===maxAusgaben;
+          return `<tr data-goto="${s.month}" ${isMax?'class="max-row"':''}>
+            <td>${s.month}${isMax?' <span style="font-size:10px;color:var(--red);font-family:Outfit,sans-serif">▲</span>':''}</td>
+            <td style="color:var(--green)">${fmt(s.einnahmen)}</td>
+            <td style="color:var(--red)">${fmt(s.ausgaben)}</td>
+            <td style="color:var(--accent)">${fmt(s.sparen)}</td>
+            <td style="color:${s.fazit>=0?'var(--green)':'var(--red)'}">${fmt(s.fazit)}</td>
+          </tr>`;
+        }).join("")}
         <tr class="total-row"><td>Gesamt</td>
           <td style="color:var(--green)">${fmt(totals.einnahmen)}</td>
           <td style="color:var(--red)">${fmt(totals.ausgaben)}</td>
@@ -700,7 +763,7 @@ function bindEvents(){
   });
 
   document.querySelectorAll(".month-chip").forEach(btn=>{
-    btn.onclick = ()=>{ STATE.month=btn.dataset.month; render(); };
+    btn.onclick = ()=>switchMonth(btn.dataset.month);
   });
 
   const scroll = document.getElementById("monthScroll");
@@ -723,10 +786,25 @@ function bindEvents(){
     sparZielInput.onblur = ()=>render();
   }
 
-  // Fix costs
+  // Fix costs amount
   document.querySelectorAll("[data-fix]").forEach(inp=>{
     inp.oninput = ()=>{ DATA[STATE.month].fix[inp.dataset.fix].amount=parseFloat(inp.value)||0; saveData(DATA); };
     inp.onblur = ()=>render();
+  });
+
+  // Fix labels
+  document.querySelectorAll("[data-fixlabel]").forEach(inp=>{
+    inp.oninput = ()=>{ DATA[STATE.month].fix[inp.dataset.fixlabel].label=inp.value; saveData(DATA); };
+  });
+
+  // Fix delete
+  document.querySelectorAll("[data-fixdel]").forEach(btn=>{
+    btn.onclick = ()=>{ DATA[STATE.month].fix.splice(parseInt(btn.dataset.fixdel),1); saveData(DATA); haptic(15); render(); };
+  });
+
+  // Add fix row
+  document.querySelectorAll("[data-action='addfix']").forEach(btn=>{
+    btn.onclick = ()=>{ DATA[STATE.month].fix.push({label:'Neue Position',amount:0}); saveData(DATA); haptic(); render(); };
   });
 
   // Savings
@@ -741,11 +819,28 @@ function bindEvents(){
     inp.onblur = ()=>render();
   });
 
+  // Quick Add inputs (preserve in STATE, no re-render on blur)
+  document.querySelectorAll("[data-qa]").forEach(inp=>{
+    inp.oninput = ()=>{ STATE.qa[inp.dataset.qa]=inp.value; };
+  });
+
+  // Quick Add submit
+  document.querySelectorAll("[data-action='quickadd']").forEach(btn=>{
+    btn.onclick = ()=>{
+      const desc = STATE.qa.desc?.trim();
+      const amount = parseFloat(STATE.qa.amount)||0;
+      if(!desc && !amount) return;
+      const today = new Date().toISOString().split('T')[0];
+      DATA[STATE.month].variable.push({date:today,category:'',desc:desc||'',amount,recurring:false});
+      STATE.qa = {desc:'',amount:''};
+      saveData(DATA); haptic(); render();
+    };
+  });
+
   // Variable cost inputs
   document.querySelectorAll("[data-var]").forEach(inp=>{
-    if(inp.dataset.vardel!==undefined) return;
-    const idx = parseInt(inp.dataset.var);
-    const field = inp.dataset.vfield;
+    const idx=parseInt(inp.dataset.var); const field=inp.dataset.vfield;
+    if(!field) return;
     inp.oninput = ()=>{
       if(field==="amount") DATA[STATE.month].variable[idx][field]=parseFloat(inp.value)||0;
       else DATA[STATE.month].variable[idx][field]=inp.value;
@@ -755,14 +850,23 @@ function bindEvents(){
     inp.onblur = ()=>render();
   });
 
+  // Recurring toggle
+  document.querySelectorAll("[data-varrecur]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const idx=parseInt(btn.dataset.varrecur);
+      DATA[STATE.month].variable[idx].recurring=!DATA[STATE.month].variable[idx].recurring;
+      saveData(DATA); haptic(); render();
+    };
+  });
+
   // Delete variable
   document.querySelectorAll("[data-vardel]").forEach(btn=>{
-    btn.onclick = ()=>{ DATA[STATE.month].variable.splice(parseInt(btn.dataset.vardel),1); saveData(DATA); render(); };
+    btn.onclick = ()=>{ DATA[STATE.month].variable.splice(parseInt(btn.dataset.vardel),1); saveData(DATA); haptic(15); render(); };
   });
 
   // Add variable
   document.querySelectorAll("[data-action='addvar']").forEach(btn=>{
-    btn.onclick = ()=>{ DATA[STATE.month].variable.push({date:"",category:"",desc:"",amount:0}); saveData(DATA); render(); };
+    btn.onclick = ()=>{ DATA[STATE.month].variable.push({date:'',category:'',desc:'',amount:0,recurring:false}); saveData(DATA); haptic(); render(); };
   });
 
   // Copy fix from previous month
@@ -784,7 +888,7 @@ function bindEvents(){
   });
   document.querySelectorAll("[data-action='confirmreset']").forEach(btn=>{
     btn.onclick = ()=>{
-      DATA = Object.fromEntries(MONTHS.map(m=>[m,initMonth()]));
+      DATA=Object.fromEntries(MONTHS.map(m=>[m,initMonth()]));
       saveData(DATA); STATE.showReset=false; render();
     };
   });
@@ -792,18 +896,35 @@ function bindEvents(){
   // Click month row to navigate
   document.querySelectorAll("[data-goto]").forEach(row=>{
     row.style.cursor="pointer";
-    row.onclick = ()=>{ STATE.month=row.dataset.goto; STATE.tab="month"; render(); };
+    row.onclick = ()=>{ switchMonth(row.dataset.goto); STATE.tab="month"; render(); };
   });
+}
+
+// ─── Swipe Gesture (init once) ───
+function initGestures(){
+  let tx=0, ty=0;
+  document.addEventListener('touchstart', e=>{
+    tx=e.touches[0].clientX; ty=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend', e=>{
+    if(STATE.tab!=='month') return;
+    const dx=e.changedTouches[0].clientX-tx;
+    const dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.5) return;
+    const mi=MONTHS.indexOf(STATE.month);
+    if(dx<0 && mi<11) switchMonth(MONTHS[mi+1]);
+    else if(dx>0 && mi>0) switchMonth(MONTHS[mi-1]);
+  },{passive:true});
 }
 
 // ─── Init ───
 render();
+initGestures();
 
 // ─── Service Worker ───
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 </script>
-
 </body>
 </html>
